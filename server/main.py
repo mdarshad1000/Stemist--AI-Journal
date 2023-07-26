@@ -9,8 +9,8 @@ from flask_cors import CORS, cross_origin
 # initialize app 
 app = Flask(__name__)
 CORS(app,)
-load_dotenv()
 
+load_dotenv()
 
 def pinecone_initialize():
     index_name = 'ai-journal'
@@ -70,7 +70,7 @@ def answer():
                       top_k=1,
                       include_metadata=True,
                       filter={
-                        "username": username}
+                        "username": username} 
                     )
 
     for match in res['matches']:
