@@ -23,8 +23,7 @@ def retrieve_and_upsert_continuously(interval):
         received_data = sql.retrieve_new_entries(
             last_retrieval_time=last_retrieval_time)
 
-        if received_data:
-
+        if received_data and len(received_data) <= 1:         
             user_ID = received_data[0]['user_id']
             content = received_data[0]['content']
             title = received_data[0]['title']
@@ -34,19 +33,21 @@ def retrieve_and_upsert_continuously(interval):
 
             metadata = {
                 'user_id': user_ID,
-                'content': content,
+                'source': content,
                 'title': title,
                 'created_at': created_at
             }
 
             chunks = split_text(journal_entry)
-            print("Chunking Done", chunks)
 
             prepared_data = data_prep(chunks, metadata, texts=[], metadatas=[])
-            print("metadata prepared", prepared_data)
 
             embed_and_upsert(*prepared_data, user_id=user_ID)
-            print("embed and upserted", embed_and_upsert)
+            print("EMBEDDED", title)
+        
+        else:
+            for item in range(len(received_data)):
+                pass
 
         last_retrieval_time = datetime.now().replace(microsecond=0)
 
@@ -73,11 +74,12 @@ def ask():
         400, "Question not found!")
     user_ID = request.json['user_id'] if request.json['user_id'] else abort(
         400, "userID not found!")
-    response = generative_qna(question, user_ID)
+    
+    response = generative_qna(question=question, user_ID=user_ID)
     return {"response": response}, 200
 
 
 if __name__ == '__main__':
     # Run the flask app and the data retrieval thread parallely
-    start_data_retrieval_thread(5)
+    start_data_retrieval_thread(0.1)
     app.run(debug=True)

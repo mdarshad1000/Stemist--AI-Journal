@@ -39,6 +39,12 @@ class Journal:
         return results
 
 
+# q1 = Journal()
+# q1.connect()
+# date_string = "2023-07-26 21:48:29"
 
+# date_format = "%Y-%m-%d %H:%M:%S"
 
+# datetime_obj = datetime.strptime(date_string, date_format)
+# q1.retrieve_new_entries(last_retrieval_time=datetime_obj)
 

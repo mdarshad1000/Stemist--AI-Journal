@@ -5,12 +5,11 @@ from uuid import uuid4
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQAWithSourcesChain, RetrievalQA
+from langchain.chains import RetrievalQA
 from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 load_dotenv()
-
 
 class Embedding:
     pass
@@ -38,10 +37,10 @@ def split_text(text: str):
     return chunks
 
 
-def data_prep(chunks: list, metadata: dict, texts: None, metadatas: None, ):
+def data_prep(chunks: list, metadata: dict, texts: None, metadatas: None):
     texts = [] or texts
     metadatas = [] or metadatas
-    chunk_metadata = [{"chunk": j, "chunk_text": text, **metadata}
+    chunk_metadata = [{"chunk": j, "source": text, **metadata}
                       for j, text in enumerate(chunks)]
     texts.extend(chunks)
     metadatas.extend(chunk_metadata)
@@ -51,6 +50,7 @@ def data_prep(chunks: list, metadata: dict, texts: None, metadatas: None, ):
 
 
 def embed_and_upsert(ids, texts, metadatas, user_id):
+    pinecone_initialize()
     index = pinecone.Index('ai-journal')
     model_name = 'text-embedding-ada-002'
     embed = OpenAIEmbeddings(
@@ -59,6 +59,7 @@ def embed_and_upsert(ids, texts, metadatas, user_id):
         openai_api_key=os.getenv('OPENAI_API_KEY')
     )
     embeds = embed.embed_documents(texts)
+    print(metadatas)
     index.upsert(vectors=zip(ids, embeds, metadatas), namespace=user_id)
     return "Successfully embedded and upserted the journal to Pinecone!"
 
@@ -73,10 +74,10 @@ def generative_qna(question, user_ID):
         openai_api_key=os.getenv('OPENAI_API_KEY')
     )
 
-    text_field = "text"
+    text_field = "source"
 
     vectorstore = Pinecone(
-        index, embed.embed_query, text_field, namespace=user_ID
+        index, embed.embed_query, text_field, user_ID
     )
 
     llm = ChatOpenAI(
@@ -85,16 +86,10 @@ def generative_qna(question, user_ID):
         temperature=0.0
     )
 
-    # qa_with_sources = RetrievalQAWithSourcesChain.from_chain_type(
-    #     llm=llm,
-    #     chain_type="stuff",
-    #     retriever=vectorstore.as_retriever()
-    # )
-
     qa = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=vectorstore.as_retriever()
+        llm=llm,
+        chain_type="stuff",
+        retriever=vectorstore.as_retriever()
     )
 
     response = qa.run(question)
