@@ -82,4 +82,4 @@ def ask():
 if __name__ == '__main__':
     # Run the flask app and the data retrieval thread parallely
     start_data_retrieval_thread(0.1)
-    app.run(debug=True)
+    app.run(debug=True,port=1234)

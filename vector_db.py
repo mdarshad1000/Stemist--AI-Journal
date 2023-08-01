@@ -53,6 +53,7 @@ def embed_and_upsert(ids, texts, metadatas, user_id):
     pinecone_initialize()
     index = pinecone.Index('ai-journal')
     model_name = 'text-embedding-ada-002'
+    
     embed = OpenAIEmbeddings(
         document_model_name=model_name,
         query_model_name=model_name,
