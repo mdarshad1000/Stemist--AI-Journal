@@ -95,6 +95,7 @@ def generative_qna(question, user_ID):
     )
 
     response = qa.run(question)
+    print(response)
     print("This is the response", response)
     return response
 
