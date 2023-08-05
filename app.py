@@ -83,6 +83,7 @@ def ask():
     user_ID = data['user_id']
     
     response = generative_qna(question=question, user_ID=user_ID)
+    print(type(response))
     return response, 200
 
 
