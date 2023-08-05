@@ -70,10 +70,14 @@ def home():
 @cross_origin('*')
 @app.route('/ask', methods=['POST', 'GET'])
 def ask():
-    question = request.json['question'] if request.json['question'] else abort(
-        400, "Question not found!")
-    user_ID = request.json['user_id'] if request.json['user_id'] else abort(
-        400, "userID not found!")
+    data = request.json
+    print(request.json)
+    # question = request.json['question'] if request.json['question'] else abort(
+    #     400, "Question not found!")
+    # user_ID = request.json['user_id'] if request.json['user_id'] else abort(
+    #     400, "userID not found!")
+    question = data['question']
+    user_ID = data['user_id']
     
     response = generative_qna(question=question, user_ID=user_ID)
     return {"response": response}, 200

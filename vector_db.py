@@ -9,6 +9,7 @@ from langchain.chains import RetrievalQA
 from langchain.vectorstores import Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 
+
 load_dotenv()
 
 class Embedding:
