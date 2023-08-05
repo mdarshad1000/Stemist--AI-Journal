@@ -2,6 +2,5 @@ Flask==2.1.2
 Flask_Cors==4.0.0
 langchain==0.0.253
 mysql_connector_repackaged==0.3.1
-pinecone==0.1.0
 pinecone_client==2.2.2
 python-dotenv==1.0.0
