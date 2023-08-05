@@ -71,6 +71,8 @@ def home():
 @cross_origin('*')
 @app.route('/ask', methods=['POST', 'GET'])
 def ask():
+    pinecone_initialize()
+
     data = request.json
     print(request.json)
     # question = request.json['question'] if request.json['question'] else abort(
