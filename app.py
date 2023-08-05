@@ -6,6 +6,7 @@ from vector_db import pinecone_initialize, split_text, data_prep, embed_and_upse
 from datetime import datetime
 import threading
 import time
+import tiktoken
 
 # initialize app
 app = Flask(__name__)
