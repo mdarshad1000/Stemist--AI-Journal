@@ -65,7 +65,7 @@ def start_data_retrieval_thread(interval):
 @app.route("/")
 def home():
 
-    return "Welcome to AI Journalling, Pinecone Initialized!"
+    return "Welcome to AI Journalling, Pinecone Initialized!!! "
 
 
 @cross_origin('*')
@@ -85,6 +85,7 @@ def ask():
     response = generative_qna(question=question, user_ID=user_ID)
     print(type(response))
     return response, 200
+ 
 
 
 if __name__ == '__main__':
